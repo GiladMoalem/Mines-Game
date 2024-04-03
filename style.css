@@ -1,0 +1,21 @@
+
+
+.board {
+    background-color: blue;
+    display: flex;
+    flex-wrap: wrap;
+
+    margin: 0 auto;
+    width: 40vw;
+    height: 40vw;
+}
+
+.square {
+    background-color: aqua;
+    width: 10%;
+    height: 10%;
+    /* padding: 0%; */
+    border-width: 1px;
+    /* margin: 0; */
+
+}
