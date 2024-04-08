@@ -42,8 +42,11 @@ class ScreenBoard {
                 
                 // right click
                 if (event.which == 3) {
-                    square.classList.add('flag');
-
+                    if (square.classList.contains('flag')) {
+                        square.classList.remove('flag');
+                    } else {
+                        square.classList.add('flag');
+                    }
                 }
             });
         }
