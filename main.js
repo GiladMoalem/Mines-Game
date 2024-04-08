@@ -9,6 +9,7 @@ class ScreenBoard {
 }
 
 class LogicBoard {
+    game_over = false;
     
     constructor (lines, bumbs_num) {
         this.lines = lines;
@@ -38,7 +39,7 @@ class LogicBoard {
             information_board[index] = -1;
             
             //add 1 to around only to not bumb square.
-            this.getAroundIndexes(index, lines).forEach(around_index => {
+            this.getAroundIndexes(index, true, lines).forEach(around_index => {
                 if (information_board[around_index] !== -1) {
                     information_board[around_index]++;
                 }
@@ -62,14 +63,29 @@ class LogicBoard {
         return y * line_num + x;
     }
     
-    getAroundIndexes(index, line_num=this.lines) {
+    getAroundIndexes(index, with_diagonals=true, line_num=this.lines) {
         let around_indexes = [];
         const [y, x] = this.indexToCordinates(index, line_num);
 
-        for (let y_index = Math.max(y-1, 0); y_index <= Math.min(y+1, line_num-1); y_index++) {
-            for (let x_index = Math.max(x-1, 0); x_index <= Math.min(x+1, line_num-1); x_index++) {
-                if (y_index === y && x_index === x) continue;
-                around_indexes.push(this.cordinatsToIndex(x_index, y_index, line_num));
+        if (with_diagonals) {
+            for (let y_index = Math.max(y-1, 0); y_index <= Math.min(y+1, line_num-1); y_index++) {
+                for (let x_index = Math.max(x-1, 0); x_index <= Math.min(x+1, line_num-1); x_index++) {
+                    if (y_index === y && x_index === x) continue;
+                    around_indexes.push(this.cordinatsToIndex(x_index, y_index, line_num));
+                }
+            }
+        } else {
+            if (y-1 >= 0) {
+                around_indexes.push(this.cordinatsToIndex(x, y-1, line_num));
+            }
+            if (y+1 <= line_num-1) {
+                around_indexes.push(this.cordinatsToIndex(x, y+1, line_num));
+            }
+            if (x-1 >= 0) {
+                around_indexes.push(this.cordinatsToIndex(x-1, y, line_num));
+            }
+            if (x+1 <= line_num-1) {
+                around_indexes.push(this.cordinatsToIndex(x+1, y, line_num));
             }
         }
         
@@ -84,17 +100,41 @@ class LogicBoard {
             return zerosIndexes;
         }
         
-        const [x, y] = this.indexToCordinates(index);
-        
+        // bfs
+        let visited = [];
+        visited[index] = true;
+        let waiting_list = [index];
+
+        while (waiting_list.length > 0) {
+            const current_index = waiting_list.pop();
+            this.getAroundIndexes(current_index, false).forEach(neighbor_index => {
+                if (!visited[neighbor_index]) {
+                    visited[neighbor_index] = true;
+                    zerosIndexes.push(neighbor_index);
+                    if (board[neighbor_index] == 0) {
+                        waiting_list.push(neighbor_index);
+                    }
+                }
+            });
+        }
+
+        // const [x, y] = this.indexToCordinates(index);
 
         return zerosIndexes;
     }
 
     discoverIndex(index, board=this.board) {
         if (this.discoverBoard[index] !== 0) return;
+        
+        if (board[index] == -1) {
+            this.game_over = true;
+            console.log('game over');
+            // this.printBoard(true);
+            // return;
+        }
 
         const discoverIndexes = this.getZeroComponant(index, board);
-        console.log(discoverIndexes);
+        console.log(`discoverIndexes= ${discoverIndexes}`);
         discoverIndexes.forEach(discover_index => {
             this.discoverBoard[discover_index] = 1; 
         });
