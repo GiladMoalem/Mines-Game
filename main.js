@@ -162,7 +162,7 @@ class LogicBoard {
 
         while (waiting_list.length > 0) {
             const current_index = waiting_list.pop();
-            this.getAroundIndexes(current_index, false).forEach(neighbor_index => {
+            this.getAroundIndexes(current_index).forEach(neighbor_index => {
                 if (!visited[neighbor_index]) {
                     visited[neighbor_index] = true;
                     zerosIndexes.push(neighbor_index);
