@@ -1,17 +1,72 @@
 console.log('hello world')
 
+// cancle the right click manu
+window.oncontextmenu = function () {
+    return false; 
+}
+
 class ScreenBoard {
 
+    constructor (line_size, pressFuncCb) {
+        this.pressSquareCb = pressFuncCb;
+        // ELEMENTS
+        this.board_element = document.querySelector('.board');
+        this.line_size = line_size;
 
-    addSquares() {
-
+        this.square_lst = [];
+        this.createSquares(line_size);
     }
+    
+
+    attribute_square_index = 'square_index'; 
+    createSquares(line_size = this.line_size) {
+        for (let index = 0; index < line_size*line_size; index++) {
+            
+            const square = document.createElement("button");
+            square.classList.add('square');
+    
+            square.id = 'id_'+index;
+            square.dataset[this.attribute_square_index] = index;
+            // square.innerText = "";
+            this.board_element.append(square);
+            this.square_lst.push(square);
+
+            square.addEventListener('mousedown', event => {
+                
+                console.log(event);
+                
+                // left click
+                if (event.which == 1) {
+                    this.pressSquareCb(index);
+                }
+                
+                // right click
+                if (event.which == 3) {
+                    square.classList.add('flag');
+
+                }
+            });
+        }
+    }
+    
+    writeToSqure(index, char) {
+        this.square_lst[index].innerText = char;
+    }
+
+    updateBoard(board, discover_indexes) {
+        discover_indexes.forEach(discover_index => {
+            this.writeToSqure(discover_index, board[discover_index]);
+        });
+    }
+    // event listiner
 }
 
 class LogicBoard {
     game_over = false;
     
     constructor (lines, bumbs_num) {
+        this.screen = new ScreenBoard(lines, this.discoverIndex.bind(this));
+
         this.lines = lines;
         this.bumbs_num = bumbs_num;
 
@@ -140,6 +195,7 @@ class LogicBoard {
         });
 
         this.printBoard(true);
+        this.screen.updateBoard(this.board, discoverIndexes);
     }
 
     printBoard(only_discoverd=true) {
@@ -154,6 +210,6 @@ class LogicBoard {
 
 }
 
-d = new LogicBoard(8,15);
-d.discoverIndex(0);
+d = new LogicBoard(10, 15);
+// d.discoverIndex(0);
 // console.log(d.generateBoard(5, 7));
