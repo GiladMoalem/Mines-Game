@@ -1,4 +1,28 @@
 
+.container {
+    /* background: #000; */
+    /* display: block; */
+    height: 44vw;
+    width: 40vw;
+    margin: 0 auto;
+}
+
+.dashboard {
+    background-color: aquamarine;
+    height: 10%;
+}
+.clock_dashboard {
+    /* background-color: blueviolet; */
+    width: 50%;
+    height: 100%;
+    margin: auto;
+    text-align: center;
+    font-size: xx-large;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .board {
     background-color: blue;
@@ -17,7 +41,6 @@
     /* padding: 0%; */
     border-width: 1px;
     /* margin: 0; */
-
 }
 
 .flag {

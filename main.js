@@ -10,6 +10,7 @@ class ScreenBoard {
     constructor (line_size, pressFuncCb) {
         this.pressSquareCb = pressFuncCb;
         // ELEMENTS
+        this.timer = document.querySelector('.clock_dashboard');
         this.board_element = document.querySelector('.board');
         this.line_size = line_size;
 
@@ -61,7 +62,10 @@ class ScreenBoard {
             this.writeToSqure(discover_index, board[discover_index]);
         });
     }
-    // event listiner
+    
+    updateTimer(timer_in_seconds) {
+        this.timer.innerText = timer_in_seconds;
+    }
 }
 
 class LogicBoard {
@@ -213,6 +217,32 @@ class LogicBoard {
 
 }
 
-d = new LogicBoard(10, 15);
+
+class Game {
+    constructor() {
+        this.logic_board = new LogicBoard(10, 15);
+
+        // this.start_time = Date.now();
+    }
+
+    updateTimer(timer_in_seconds){
+        this.logic_board.screen.updateTimer(timer_in_seconds);
+    }
+}
+
+
+
+game = new Game();
+
+
+const start_time = Date.now();
+setInterval(function() {updateTimer(Date.now());} , 1000)
+
+function updateTimer(current_time){
+    const past_time = current_time - start_time;
+    const past_seconds = Math.floor(past_time/1000);
+    game.updateTimer(past_seconds);
+}
+
 // d.discoverIndex(0);
 // console.log(d.generateBoard(5, 7));
